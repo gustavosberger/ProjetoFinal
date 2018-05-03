@@ -11,6 +11,18 @@ import sys
 from pygame.locals import *
 
 
+#inicializando
+pygame.init()
+tela = pygame.display.set_mode(800,600)
+pygame.display.set_caption("day z")
+# adicionando fundo
+fundo = pygame.image.load("fundopygame.jpg").convert()
+
+
+
+
+
+
 
 class Zumbi1(pygame.sprite.Sprite):
     def __init__(self, arquivo_imagem,posX,posY,velX):
@@ -81,12 +93,7 @@ class Zumbi5(pygame.sprite.Sprite):
     def move(self):
        self.rect.x += self.vx
        
-pygame.init()
-tela = pygame.display.set_mode((800, 600), 0, 32)
-pygame.display.set_caption('Jogo Zumbis')
 
-# carrega imagem de fundo (https://wallpapersafari.com/dark-green-background/)
-fundo = pygame.image.load("fundo-800X600.jpg").convert()
 
 # cria os zumbis
 zumbi1 = Zumbi1("go_5.png", 700, 300, 1)
