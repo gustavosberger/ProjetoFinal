@@ -1,0 +1,71 @@
+import pygame, sys, os
+from pygame.locals import *
+
+
+class Personagem(pygame.sprite.Sprite):
+    
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.movex = 0
+        self.movey = 0
+        self.image = pygame.image.load(os.path.join('.png'))
+        self.frame = 0
+        self.rect = self.image.get_rect()
+         
+    def controle(self, x, y):
+        self.movex += x
+        self.movey += y
+    
+    def update(self):
+        self.rect.x = self.rect.x + self.movex
+        self.rect.y = self.rect.y + self.movey
+       
+        
+        
+ani = 4 
+pygame.init()
+tela = pygame.display.set_mode((800, 600), 0, 32)
+pygame.display.set_caption('Jogo EP')
+fundo = pygame.image.load('fundo-800X600.jpg').convert()
+player = Personagem()
+player.rect.x = 0
+player.rect.y = 570
+steps = 1
+rodando = True
+char_group = pygame.sprite.Group()
+char_group.add(player)
+
+
+while rodando == True:
+    
+    
+
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit(); sys.exit()
+            rodando = False
+            
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT or event.key == ord('a'):
+                player.controle(-steps, 0)
+            if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                player.controle(steps,0)
+            if event.key == pygame.K_UP or event.key == ord('w'):
+                if player.rect.y < 200:
+                    player.controle(0,-steps)
+                
+                    
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == ord('a'):
+                player.controle(steps,0)
+            if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                player.controle(-steps,0)
+            if event.key == ord('q'):
+                pygame.quit()
+                sys.exit()
+                main = False
+    tela.blit(fundo, (0,0))           
+    player.update()
+    char_group.draw(tela)
+    pygame.display.update()

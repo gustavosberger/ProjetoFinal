@@ -1,0 +1,12 @@
+import pygame
+
+#inicializando
+pygame.init()
+tela = pygame.display.set_mode(800,600)
+pygame.display.set_caption("day z")
+# adicionando fundo
+fundo = pygame.image.load("fundopygame.jpg").convert()
+
+
+#gerando a saida 
+tela.blit(fundo(0,0))
