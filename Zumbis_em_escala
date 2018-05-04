@@ -4,7 +4,6 @@
 Created on Fri Apr 27 08:47:15 2018
 @author: Gustavo
 """
-
 import pygame
 import sys
 from pygame.locals import *
@@ -18,10 +17,11 @@ class Personagem(pygame.sprite.Sprite):
         self.movey = 0
         self.frame = 0
         self.images= []
-        for i in range(1,10):
-            img = pygame.image.load(os.path.join('images','go_' + str(i) + '.png')).convert()
+        for i in range(0,7):
+            img = pygame.image.load(os.path.join('images','__Bandit02_Walk_00' + str(i) + '.png')).convert()
+            img = pygame.transform.scale(img, (95, 110))
+            self.image= pygame.transform.scale(img,(10,15))
             self.images.append(img)
-            self.image= pygame.transform.scale(img,(75,150))
             self.image = self.images[0]
             self.rect  = self.image.get_rect()
 
@@ -43,7 +43,7 @@ class Personagem(pygame.sprite.Sprite):
             self.frame += 1
             if self.frame > 3*ani:
                 self.frame = 0
-            self.image = self.images[(self.frame//ani)+4]
+            self.image = self.images[(self.frame//ani)+1]
 
 
 
@@ -132,8 +132,8 @@ pygame.display.set_caption('Jogo EP')
 fundo = pygame.image.load('fundo-800X600.jpg').convert()
 player = Personagem()
 player.rect.x = 0
-player.rect.y = 300
-steps = 1
+player.rect.y = 500
+steps = 10
 char_group = pygame.sprite.Group()
 char_group.add(player)
 
@@ -210,14 +210,15 @@ while rodando:
     
                 
     #gera saídas
+    
     tela.blit(fundo, (0, 0))
+    player.update()
+    char_group.draw(tela)
     zumbi1_group.draw(tela)
     zumbi2_group.draw(tela)
     zumbi3_group.draw(tela)
     zumbi4_group.draw(tela)
     zumbi5_group.draw(tela)            
-    player.update()
-    char_group.draw(tela)
     pygame.display.update()
     
 pygame.display.quit()
