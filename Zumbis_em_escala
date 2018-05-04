@@ -18,9 +18,8 @@ class Personagem(pygame.sprite.Sprite):
         self.frame = 0
         self.images= []
         for i in range(0,7):
-            img = pygame.image.load(os.path.join('images','__Bandit02_Walk_00' + str(i) + '.png')).convert()
-            img = pygame.transform.scale(img, (95, 110))
-            self.image= pygame.transform.scale(img,(10,15))
+            img = pygame.image.load(os.path.join('images','__Bandit02_Walk_00' + str(i) + '.png')).convert_alpha()
+            img = pygame.transform.scale(img, (95, 150))
             self.images.append(img)
             self.image = self.images[0]
             self.rect  = self.image.get_rect()
@@ -132,7 +131,7 @@ pygame.display.set_caption('Jogo EP')
 fundo = pygame.image.load('fundo-800X600.jpg').convert()
 player = Personagem()
 player.rect.x = 0
-player.rect.y = 500
+player.rect.y = 480
 steps = 10
 char_group = pygame.sprite.Group()
 char_group.add(player)
