@@ -9,6 +9,7 @@ import sys
 from pygame.locals import *
 import os
 
+
 class Personagem(pygame.sprite.Sprite):
     
     def __init__(self):
@@ -43,86 +44,23 @@ class Personagem(pygame.sprite.Sprite):
             if self.frame > 3*ani:
                 self.frame = 0
             self.image = self.images[(self.frame//ani)+1]
+            
+class Zumbi(pygame.sprite.Sprite): 
+    def __init__(self, arquivo_imagem,posX,posY,velX):
+        pygame.sprite.Sprite.__init__(self)
+        self.vx= velX
+        image = pygame.image.load(arquivo_imagem)
+        self.image= pygame.transform.scale (image, (75,150))
+        self.rect = self.image.get_rect()
+        self.rect.x = posX
+        self.rect.y= posY
+    
+    def move(self):
+       self.rect.x += self.vx
 
-
-
-
-class Zumbi1(pygame.sprite.Sprite): 
-    def __init__(self, arquivo_imagem,posX,posY,velX):
-        pygame.sprite.Sprite.__init__(self)
-        self.vx= velX
-        image = pygame.image.load(arquivo_imagem)
-        self.image= pygame.transform.scale (image, (75,150))
-        self.rect = self.image.get_rect()
-        self.rect.x = posX
-        self.rect.y= posY
-    
-    def move(self):
-       self.rect.x += self.vx
-       
-     
-    
-    
-    
-class Zumbi2(pygame.sprite.Sprite):
-    def __init__(self, arquivo_imagem,posX,posY,velX):
-        pygame.sprite.Sprite.__init__(self)
-        self.vx= velX
-        image = pygame.image.load(arquivo_imagem)
-        self.image= pygame.transform.scale (image, (75,150))
-        self.rect = self.image.get_rect()
-        self.rect.x = posX
-        self.rect.y= posY
-    
-    def move(self):
-       self.rect.x += self.vx
-       
-     
-        
-class Zumbi3(pygame.sprite.Sprite):
-    def __init__(self, arquivo_imagem,posX,posY,velX):
-        pygame.sprite.Sprite.__init__(self)
-        self.vx= velX
-        image = pygame.image.load(arquivo_imagem)
-        self.image= pygame.transform.scale (image, (75,150))
-        self.rect = self.image.get_rect()
-        self.rect.x = posX
-        self.rect.y= posY
-    
-    def move(self):
-       self.rect.x += self.vx
-      
-     
-        
-class Zumbi4(pygame.sprite.Sprite):
-    def __init__(self, arquivo_imagem,posX,posY,velX):
-        pygame.sprite.Sprite.__init__(self)
-        self.vx= velX
-        image = pygame.image.load(arquivo_imagem)
-        self.image= pygame.transform.scale (image, (75,150))
-        self.rect = self.image.get_rect()
-        self.rect.x = posX
-        self.rect.y= posY
-    
-    def move(self):
-       self.rect.x += self.vx
-       
-       
-   
-    
-class Zumbi5(pygame.sprite.Sprite):
-    def __init__(self, arquivo_imagem,posX,posY,velX):
-        pygame.sprite.Sprite.__init__(self)
-        self.vx= velX
-        image = pygame.image.load(arquivo_imagem)
-        self.image= pygame.transform.scale (image, (75,150))
-        self.rect = self.image.get_rect()
-        self.rect.x = posX
-        self.rect.y= posY
-    
-    def move(self):
-       self.rect.x += self.vx
-       
+def gravidade(steps):
+    g= steps - 0.8*steps
+    return g
 
 ani = 4 
 pygame.init()
@@ -139,28 +77,27 @@ char_group.add(player)
 
 
 # cria os zumbis
-zumbi1 = Zumbi1("go_1.png", 700, 455, -1)
+zumbi1 = Zumbi("go_1.png", 700, 455, -1)
 zumbi1_group = pygame.sprite.Group()
 zumbi1_group.add(zumbi1)
 
-zumbi2 = Zumbi2("go_1.png", 700, 455, -2)
+zumbi2 = Zumbi("go_1.png", 700, 455, -2)
 zumbi2_group = pygame.sprite.Group()
 zumbi2_group.add(zumbi2)
 
-zumbi3 = Zumbi3("go_1.png", 700, 455, -1.8)
+zumbi3 = Zumbi("go_1.png", 700, 455, -1.8)
 zumbi3_group = pygame.sprite.Group()
 zumbi3_group.add(zumbi3)
 
-zumbi4 = Zumbi4("go_1.png", 700, 455, -3)
+zumbi4 = Zumbi("go_1.png", 700, 455, -3)
 zumbi4_group = pygame.sprite.Group()
 zumbi4_group.add(zumbi4)
 
-zumbi5 = Zumbi5("go_1.png", 700, 455, -2.6)
+zumbi5 = Zumbi("go_1.png", 700, 455, -2.6)
 zumbi5_group = pygame.sprite.Group()
 zumbi5_group.add(zumbi5)
 
 relogio =pygame.time.Clock()
-
 
 
 rodando = True
@@ -193,7 +130,8 @@ while rodando:
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 player.controle(steps,0)
             if event.key == pygame.K_UP or event.key == ord('w'):
-                player.controle(0,-steps)
+                player.controle(0,-(gravidade(steps)))
+                
                 
                     
         if event.type == pygame.KEYUP:
@@ -205,7 +143,7 @@ while rodando:
                 pygame.quit()
                 sys.exit()
                 main = False
-        
+                
     
                 
     #gera saídas
