@@ -10,12 +10,17 @@ from pygame.locals import *
 import os
 import random
 
+
 #======================================= Classes ============================================
 
-
+black= (255,255,255)
 
 #========= Placar ===========
-
+def Pontuacao(score):
+    font= pygame.font.SysFont(None,25)
+    text= font.render("Zombies Killed :"+ str(score), True, black)
+    tela.blit(text,(30,90))
+    
 
 #========= Coração ===========
 class Vida(pygame.sprite.Sprite):
@@ -34,7 +39,7 @@ class Personagem(pygame.sprite.Sprite):
     
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.gravity = 0.5
+        self.gravity= 0.3
         self.velocity = 0
         self.isJumping = False
         self.movex = 0
@@ -93,16 +98,17 @@ class Zumbi(pygame.sprite.Sprite):
        self.image= self.images[self.frame//ani]
        
        
-
+pontos= 0
 ani = 4 
 pygame.init()
 tela = pygame.display.set_mode((800, 600), 0, 32)
 pygame.display.set_caption('Jogo EP')
-fundo = pygame.image.load('fundo-800X600.jpg').convert()
+fundo = pygame.image.load('background.jpg').convert()
+fundo= pygame.transform.scale(fundo, (800,600))
 player = Personagem()
 player.rect.x = 0
 player.rect.y = 480
-steps = 10
+steps = 12
 steps2= 20
 char_group = pygame.sprite.Group()
 char_group.add(player)
@@ -155,6 +161,12 @@ rodando = True
 
 #============================== Loop principal ==========================================
 while rodando:
+    if player.rect.y < 480:
+        player.gravity= 1.2 
+    else:
+        player.rect.y = 480
+        player.gravity= 0 
+        
     tempo = relogio.tick(30)
     zumbi1.move()
     if zumbi1.rect.x == -200:
@@ -199,24 +211,27 @@ while rodando:
                 zumbi1 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
                 zumbi1_group = pygame.sprite.Group()
                 zumbi1_group.add(zumbi1)
+                pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi2):
                 zumbi2 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
                 zumbi2_group = pygame.sprite.Group()
                 zumbi2_group.add(zumbi2)
+                pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi3):
                 zumbi3 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
                 zumbi3_group = pygame.sprite.Group()
                 zumbi3_group.add(zumbi3)
+                pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi4):
                 zumbi4 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
                 zumbi4_group = pygame.sprite.Group()
                 zumbi4_group.add(zumbi1)
+                pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi5):
                 zumbi5 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
                 zumbi5_group = pygame.sprite.Group()
                 zumbi5_group.add(zumbi5)
-
-            
+                pontos+= 1
                 
                 
 
@@ -231,6 +246,7 @@ while rodando:
                 player.controle(-steps,0)
             if event.key == pygame.K_UP or event.key == ord('w'):
                 player.controle(0,-steps)
+    
             if event.key == ord('q'):
                 pygame.quit()
                 sys.exit()
@@ -251,8 +267,10 @@ while rodando:
                 coracao3= Vida("heart.png",800,800)
                 coracao3_group= pygame.sprite.Group()
                 coracao3_group.add(coracao3)
-                rodando= False
-                
+                rodando= False 
+
+        
+
                 
             
 
@@ -265,6 +283,7 @@ while rodando:
     tela.blit(fundo, (0, 0))
     player.update()
     char_group.draw(tela)
+    Pontuacao(pontos)
     zumbi1_group.draw(tela)
     zumbi2_group.draw(tela)
     zumbi3_group.draw(tela)
