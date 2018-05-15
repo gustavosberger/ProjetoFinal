@@ -118,18 +118,19 @@ class Zumbi(pygame.sprite.Sprite):
       
 #=========== Fundo ============
 class Background(pygame.sprite.Sprite):
-    def _init_(self, imagem, x, y, vel_x):
-        pygame.sprite.Sprite._init_(self)
+    def __init__(self, imagem, x, y, vel_x):
+        pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(imagem)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.vel_x = vel_x
+        
     def move(self):
-        if self.rect.x >= -800:
+        if self.rect.x >= -3202:
             self.rect.x -= self.vel_x
         else: 
-            self.rect.x = 800      
+            self.rect.x = 3202    
 
        
        
@@ -144,7 +145,7 @@ player = Personagem()
 player.rect.x = 0
 player.rect.y = 480
 steps = 12
-steps2= 20
+steps2= 12
 char_group = pygame.sprite.Group()
 char_group.add(player)
 
@@ -178,7 +179,8 @@ zumbi5_group.add(zumbi5)
 zumbizao= Zumbi(900, 100, -2)
 vida_zumbi= Dano("Vida4.png", 900,150,-2)
 zumbizao_group= pygame.sprite.Group()
-zumbizao_group.add(zumbizao, vida_zumbi)
+zumbizao_group.add(zumbizao)
+zumbizao_group.add(vida_zumbi)
 
 #========Corações=========
 coracao1= Vida("heart.png",30,50)
@@ -195,8 +197,8 @@ coracao3_group.add(coracao3)
 
 
 #===========Fundo============
-background = Background('fundo_jogo.jpeg',0,0,3)
-background1 = Background('fundo_jogo.jpeg',0,800,3)
+background = Background('fundo_bergao.png',0,0,7)
+background1 = Background('fundo_bergao.png',0,3202,7)
 background_group = pygame.sprite.Group()
 background_group.add(background)
 background_group.add(background1)
@@ -254,7 +256,7 @@ while rodando:
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 player.controle(steps,0)
             if event.key == pygame.K_UP or event.key == ord('w'):
-                player.controle(0,-steps) 
+                player.controle(0,-steps2) 
                 
                 
             #===== Pressionar barra de espaço ====
@@ -323,7 +325,7 @@ while rodando:
                 coracao3_group.add(coracao3)
 
     background.move()
-
+    
                 
             
 
