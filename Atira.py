@@ -74,7 +74,7 @@ class Tiro(pygame.sprite.Sprite):
     def __init__(self, arquivo_imagem,posX,posY):
         pygame.sprite.Sprite.__init__(self)
         image = pygame.image.load(arquivo_imagem)
-        self.image= pygame.transform.scale (image, (30,30))
+        self.image= pygame.transform.scale (image, (10,10))
         self.rect = self.image.get_rect()
         self.rect.x= posX
         self.rect.y= posY
@@ -186,6 +186,23 @@ class Background(pygame.sprite.Sprite):
             self.rect.x -= self.vel_x
         else: 
             self.rect.x = 3202    
+            
+            
+#=========== Obstáculo ==============
+class Prop(pygame.sprite.Sprite):
+    
+    
+    def __init__(self, arquivo_imagem,posX,posY):
+        pygame.sprite.Sprite.__init__(self)
+        image = pygame.image.load(arquivo_imagem)
+        self.image= pygame.transform.scale (image, (80,80))
+        self.rect = self.image.get_rect()
+        self.rect.x = posX
+        self.rect.y = posY
+        
+    def move(self,Vx):
+        self.rect.x += Vx
+        
 
        
        
@@ -198,7 +215,7 @@ pygame.display.set_caption('Jogo EP')
 #fundo= pygame.transform.scale(fundo, (800,600))
 player = Personagem()
 player.rect.x = 0
-player.rect.y = 480
+player.rect.y = 375
 #power= Especial()
 #power.rect.x= 400
 #power.rect.y=480
@@ -215,23 +232,23 @@ power_group= pygame.sprite.Group()
 
 
 #========Zumbis=========
-zumbi1 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi1 = Zumbi(700, 350, random.randrange(-1,-6,-1))
 zumbi1_group = pygame.sprite.Group()
 zumbi1_group.add(zumbi1)
 
-zumbi2 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi2 = Zumbi(700, 350, random.randrange(-1,-6,-1))
 zumbi2_group = pygame.sprite.Group()
 zumbi2_group.add(zumbi2)
 
-zumbi3 = Zumbi (700, 455, random.randrange(-1,-6,-1))
+zumbi3 = Zumbi (700, 350, random.randrange(-1,-6,-1))
 zumbi3_group = pygame.sprite.Group()
 zumbi3_group.add(zumbi3)
 
-zumbi4 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi4 = Zumbi(700, 350, random.randrange(-1,-6,-1))
 zumbi4_group = pygame.sprite.Group()
 zumbi4_group.add(zumbi4)
 
-zumbi5 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi5 = Zumbi(700, 350, random.randrange(-1,-6,-1))
 zumbi5_group = pygame.sprite.Group()
 zumbi5_group.add(zumbi5)
 
@@ -268,6 +285,12 @@ tiro_group= pygame.sprite.Group()
 tiro_group.add(tiro)
 
 
+#==========Obstáculo=============
+obst1 = Prop('flame.png', 600, 420)
+obstacle_group = pygame.sprite.Group()
+obstacle_group.add(obst1)
+
+
 relogio =pygame.time.Clock()
 speed= 2
 distancia=0 
@@ -276,10 +299,10 @@ rodando = True
 
 #============================== Loop principal ==========================================
 while rodando:
-    if player.rect.y < 480:
-        player.gravity= 0.8
+    if player.rect.y < 375:
+        player.gravity= 1.2
     else:
-        player.rect.y = 480
+        player.rect.y = 375
         player.gravity= 0 
         
     tempo = relogio.tick(30)
@@ -305,6 +328,14 @@ while rodando:
     player.rect.y += player.velocity  
     player.velocity += player.gravity
     
+    #========Tiro e obstáculo (mexer)=======
+    
+    tiro.move(10)
+    obst1.move(-10)
+    if obst1.rect.x < 0:
+        obst1 = Prop('flame.png', 900, 420)
+        obstacle_group = pygame.sprite.Group()
+        obstacle_group.add(obst1)
     
     #========== Loop das teclas ==========
     for event in pygame.event.get():
@@ -325,27 +356,27 @@ while rodando:
                 
             #===== Pressionar barra de espaço ====
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi1):
-                zumbi1 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi1 = Zumbi( 800, 350, random.randrange(-1,-6,-1))
                 zumbi1_group = pygame.sprite.Group()
                 zumbi1_group.add(zumbi1)
                 pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi2):
-                zumbi2 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi2 = Zumbi( 800, 350, random.randrange(-1,-6,-1))
                 zumbi2_group = pygame.sprite.Group()
                 zumbi2_group.add(zumbi2)
                 pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi3):
-                zumbi3 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi3 = Zumbi( 800, 350, random.randrange(-1,-6,-1))
                 zumbi3_group = pygame.sprite.Group()
                 zumbi3_group.add(zumbi3)
                 pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi4):
-                zumbi4 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi4 = Zumbi( 800, 350, random.randrange(-1,-6,-1))
                 zumbi4_group = pygame.sprite.Group()
                 zumbi4_group.add(zumbi1)
                 pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi5):
-                zumbi5 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi5 = Zumbi( 800, 350, random.randrange(-1,-6,-1))
                 zumbi5_group = pygame.sprite.Group()
                 zumbi5_group.add(zumbi5)
                 pontos+= 1
@@ -357,15 +388,15 @@ while rodando:
             
             #============= Barra de Espaço (Tiro) ==================
             if event.key == pygame.K_SPACE:
-                tiro= Tiro('Bullet.png',player.rect.x, 500)
+                tiro= Tiro('Bullet.png',player.rect.x, player.rect.y+60)
                 tiro_group= pygame.sprite.Group()
                 tiro_group.add(tiro)
-        tiro.move(60)
+        
         
         
         
         #======================= Matar zombie com o tiro =======================
-        if pygame.sprite.collide_rect(tiro, zumbi1):
+        if pygame.sprite.groupcollide(tiro_group, zumbi1_group,True,True):
             zumbi1 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
             zumbi1_group = pygame.sprite.Group()
             zumbi1_group.add(zumbi1)
@@ -374,7 +405,7 @@ while rodando:
             tiro_group= pygame.sprite.Group()
             tiro_group.add(tiro)
             
-        if pygame.sprite.collide_rect(tiro, zumbi2):
+        if pygame.sprite.groupcollide(tiro_group, zumbi2_group,True,True):
             zumbi2 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
             zumbi2_group = pygame.sprite.Group()
             zumbi2_group.add(zumbi2)
@@ -383,7 +414,7 @@ while rodando:
             tiro_group= pygame.sprite.Group()
             tiro_group.add(tiro)
             
-        if pygame.sprite.collide_rect(tiro, zumbi3):
+        if pygame.sprite.groupcollide(tiro_group, zumbi3_group,True,True):
             zumbi3 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
             zumbi3_group = pygame.sprite.Group()
             zumbi3_group.add(zumbi3)
@@ -392,7 +423,7 @@ while rodando:
             tiro_group= pygame.sprite.Group()
             tiro_group.add(tiro)
             
-        if pygame.sprite.collide_rect(tiro, zumbi4):
+        if pygame.sprite.groupcollide(tiro_group, zumbi4_group,True,True):
             zumbi4 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
             zumbi4_group = pygame.sprite.Group()
             zumbi4_group.add(zumbi4)
@@ -400,8 +431,8 @@ while rodando:
             tiro= Tiro('Bullet.png',900, 10)
             tiro_group= pygame.sprite.Group()
             tiro_group.add(tiro)
-            
-        if pygame.sprite.collide_rect(tiro, zumbi5):
+        
+        if pygame.sprite.groupcollide(tiro_group, zumbi5_group,True,True):
             zumbi5 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
             zumbi5_group = pygame.sprite.Group()
             zumbi5_group.add(zumbi5)
@@ -409,7 +440,10 @@ while rodando:
             tiro= Tiro('Bullet.png',900, 10)
             tiro_group= pygame.sprite.Group()
             tiro_group.add(tiro)
-
+            
+            
+            
+                   
                 
 
                     
@@ -464,6 +498,7 @@ while rodando:
     zumbi4_group.draw(tela)
     zumbi5_group.draw(tela) 
     zumbizao_group.draw(tela)
+    obstacle_group.draw(tela)
     tiro_group.draw(tela)
 #    power.update()
     player.update()
