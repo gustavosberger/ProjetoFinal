@@ -1,0 +1,89 @@
+"""
+Created on Fri May 18 09:06:37 2018
+
+@author: rodrigo
+"""
+import pygame
+import sys
+
+def menu(self):
+    
+    count = 0
+    pygame.mouse.set_visible(1)
+ 
+    p1 = Botao(400,300,"1p.png")
+    p2 = Botao(400,400,"2p.png")
+    ex = Botao(400,500,"sair.png")
+    cursor = Cursor([0,0])
+    botoes = []
+    botoes.append(p1)
+    botoes.append(p2)
+    botoes.append(ex)
+    while 1:
+        count += 1
+        self.clock.tick(600)
+ 
+    for event in pygame.event.get():                     # 
+#Verifica eventos do teclado, mouse etc
+        if event.type == pygame.QUIT: 
+            
+            sys.exit()
+ 
+            pos = pygame.mouse.get_pos()
+ 
+            bg = pygame.image.load("lotacao.jpg")
+            self.screen.blit(bg,[0,0])
+
+            logo = pygame.image.load("logo.png")
+            self.screen.blit(logo,[20,20])
+ 
+            for botao in botoes:
+                 if botao.angulo > 0:
+                     botao.angulo -= 1
+                     botao.inclina()
+
+                 self.screen.blit(botao.image, [botao.pos_x, botao.pos_y])
+                 if pygame.sprite.spritecollide(cursor, [botao], False):
+                     botao.angulo = 3
+                     botao.inclina()
+
+ 
+            cursor.rect.x = pos[0]
+            cursor.rect.y = pos[1]
+            self.screen.blit(cursor.image, pos)
+            pygame.display.flip()
+
+
+ #Seguem as classes Cursor e Botao :
+
+class Botao(pygame.sprite.Sprite):
+     def __init__(self, x, y, image):
+         pygame.sprite.Sprite.__init__(self)
+         self.image = pygame.image.load(image)
+         self.original = pygame.image.load(image)
+         self.angulo = 0
+         self.image = pygame.transform.rotate(self.original, self.angulo)
+         #posicao no quadro
+         self.rect = self.image.get_rect()
+         #posicao relativa
+         self.pos_x = x
+         self.pos_y = y
+
+         self.rect.x = x
+         self.rect.y = y
+
+     def __str__(self):
+         return self.name
+
+     def inclina(self):
+         self.image = pygame.transform.rotate(self.original, self.angulo)
+ 
+class Cursor(pygame.sprite.Sprite):
+     def __init__(self, pos):
+         pygame.sprite.Sprite.__init__(self)
+         self.image = pygame.image.load("cursor.png")
+         self.rect  = self.image.get_rect()
+         self.rect.x, self.rect.y = pos
+         self.selec = 1
+         
+         
