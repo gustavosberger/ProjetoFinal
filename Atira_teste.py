@@ -10,12 +10,17 @@ from pygame.locals import *
 import os
 import random
 
+with open("Highscore.txt", 'r') as Highscore:
+    Highscore_arquivo = Highscore.read()
+
 
 #======================================= Classes ============================================
 morto = False
 gun = False
-black= (255,255,255)
+black= (0,0,0)
+white = (255,255,255)
 vermelho= (238,44,44)
+carrot= (255,97,3)
 #======= Poder especial ==========
 #class Especial(pygame.sprite.Sprite):
 
@@ -87,8 +92,6 @@ def Pontuacao(score):
     font= pygame.font.SysFont(None,25)
     text= font.render("Zombies Killed : "+ str(score), True, black)
     tela.blit(text,(30,90))
-
-
 
 
 #========= Coração ===========
@@ -306,7 +309,7 @@ background_group.add(background1)
 
 
 #==========Tiro=============
-tiro= Tiro('Bullet.png',900, 10)
+tiro= Tiro('Bullet.png',900, 30)
 tiro_group= pygame.sprite.Group()
 tiro_group.add(tiro)
 
@@ -321,126 +324,158 @@ relogio =pygame.time.Clock()
 speed= 2
 distancia=0
 i=0
-rodando = True
+Highscore= 0
+rodando = False
 
-#============================== Loop principal ==========================================
-while rodando:
-    if player.rect.y < 375:
-        player.gravity= 1.2
-    else:
-        player.rect.y = 375
-        player.gravity= 0
 
-    tempo = relogio.tick(30)
-    zumbi1.move()
-    if zumbi1.rect.x == -200:
-        zumbi1.rect.x= 800
-    zumbi2.move()
-    if zumbi2.rect.x == -200:
-        zumbi2.rect.x= 800
-    zumbi3.move()
-    if zumbi3.rect.x== -200:
-        zumbi3.rect.x= 800
-    zumbi4.move()
-    if zumbi4.rect.x== -200:
-        zumbi4.rect.x= 800
-    zumbi5.move()
-    if zumbi5.rect.x== -200:
-        zumbi5.rect.x= 800
-    if pontos == 20 or pontos == 30:
-          zumbizao.move()
-
-    #=========== Pulo =============
-    player.rect.y += player.velocity
-    player.velocity += player.gravity
-
-    #========Tiro e obstáculo (mexer)=======
-
-    tiro.move(20)
-    obst1.move(-2)
-    if obst1.rect.x < 0:
-        obst1 = Prop('flame.png', 900, 420)
-        obstacle_group = pygame.sprite.Group()
-        obstacle_group.add(obst1)
-
-    #========== Loop das teclas ==========
+#==========Menu=============
+menu = True
+while menu:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit(); sys.exit()
-            rodando = False
-
-
-        #================= KeyDown ==============
+            menu = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT or event.key == ord('a'):
-                player.controle(-steps, 0)
-            if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                player.controle(steps,0)
-            if event.key == pygame.K_UP or event.key == ord('w'):
-                player.controle(0,-steps2)
-
-
-            #===== Pressionar barra de espaço ====
-            if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi1):
-                zumbi1.kill()
-                zumbi1 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
-                zumbi1_group = pygame.sprite.Group()
-                zumbi1_group.add(zumbi1)
-                pontos+= 1
-            if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi2):
-                zumbi2.kill()
-                zumbi2 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
-                zumbi2_group = pygame.sprite.Group()
-                zumbi2_group.add(zumbi2)
-                pontos+= 1
-            if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi3):
-                zumbi3.kill()
-                zumbi3 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
-                zumbi3_group = pygame.sprite.Group()
-                zumbi3_group.add(zumbi3)
-                pontos+= 1
-            if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi4):
-                zumbi4.kill()
-                zumbi4 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
-                zumbi4_group = pygame.sprite.Group()
-                zumbi4_group.add(zumbi1)
-                pontos+= 1
-            if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi5):
-                zumbi5.kill()
-                zumbi5 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
-                zumbi5_group = pygame.sprite.Group()
-                zumbi5_group.add(zumbi5)
-                pontos+= 1
-            if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbizao):
-                zumbizao= Zumbi(Zumbi.rect.x-10,100, -2)
-                zumbizao_group = pygame.sprite.Group()
-                zumbizao_group.add(zumbizao)
-
-
-            #============= Barra de Espaço (Tiro) ==================
             if event.key == pygame.K_SPACE:
-                tiro= Tiro('Bullet.png',player.rect.x, player.rect.y)
-                tiro_group= pygame.sprite.Group()
-                tiro_group.add(tiro)
+                rodando = True
+            if event.key == pygame.K_ESCAPE:
+                menu = False
+
+
+    font= pygame.font.SysFont(None,50)
+    fonte= pygame.font.SysFont(None,75)
+    text= font.render("Para Jogar, pressione Barra de Espaço", True, white)
+    texto= font.render ("Para Sair do jogo, pressione ESC", True, white)
+    nome= fonte.render("ZUMBINSPER",True, carrot)
+    tela.blit(nome,(250, 100))
+    tela.blit(texto,(120,300))
+    tela.blit(text,(120,200))
+    pygame.display.update()
 
 
 
 
-        #===============KeyUp===============
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == ord('a'):
-                player.controle(steps,0)
-            if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                player.controle(-steps,0)
-            if event.key == pygame.K_UP or event.key == ord('w'):
-                player.controle(0,-steps)
 
-            if event.key == ord('q'):
-                pygame.quit()
-                sys.exit()
-                main = False
 
-        #==============Collide=============
+#============================== Loop principal ==========================================
+    while rodando:
+        if player.rect.y < 375:
+            player.gravity= 1.2
+        else:
+            player.rect.y = 375
+            player.gravity= 0
+
+        tempo = relogio.tick(30)
+        zumbi1.move()
+        if zumbi1.rect.x == -200:
+            zumbi1.rect.x= 800
+        zumbi2.move()
+        if zumbi2.rect.x == -200:
+            zumbi2.rect.x= 800
+        zumbi3.move()
+        if zumbi3.rect.x== -200:
+            zumbi3.rect.x= 800
+        zumbi4.move()
+        if zumbi4.rect.x== -200:
+            zumbi4.rect.x= 800
+        zumbi5.move()
+        if zumbi5.rect.x== -200:
+            zumbi5.rect.x= 800
+        if pontos == 20 or pontos == 30:
+              zumbizao.move()
+
+        #=========== Pulo =============
+        player.rect.y += player.velocity
+        player.velocity += player.gravity
+
+        #========Tiro e obstáculo (mexer)=======
+
+        tiro.move(20)
+        obst1.move(-2)
+        if obst1.rect.x < 0:
+            obst1 = Prop('flame.png', 900, 420)
+            obstacle_group = pygame.sprite.Group()
+            obstacle_group.add(obst1)
+
+        #========== Loop das teclas ==========
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit(); sys.exit()
+                rodando = False
+
+
+            #================= KeyDown ==============
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT or event.key == ord('a'):
+                    player.controle(-steps, 0)
+                if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                    player.controle(steps,0)
+                if event.key == pygame.K_UP or event.key == ord('w'):
+                    player.controle(0,-steps2)
+
+
+                #===== Pressionar barra de espaço ====
+                if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi1):
+                    zumbi1.kill()
+                    zumbi1 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
+                    zumbi1_group = pygame.sprite.Group()
+                    zumbi1_group.add(zumbi1)
+                    pontos+= 1
+                if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi2):
+                    zumbi2.kill()
+                    zumbi2 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
+                    zumbi2_group = pygame.sprite.Group()
+                    zumbi2_group.add(zumbi2)
+                    pontos+= 1
+                if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi3):
+                    zumbi3.kill()
+                    zumbi3 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
+                    zumbi3_group = pygame.sprite.Group()
+                    zumbi3_group.add(zumbi3)
+                    pontos+= 1
+                if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi4):
+                    zumbi4.kill()
+                    zumbi4 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
+                    zumbi4_group = pygame.sprite.Group()
+                    zumbi4_group.add(zumbi1)
+                    pontos+= 1
+                if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi5):
+                    zumbi5.kill()
+                    zumbi5 = Zumbi( 800, 350, random.randrange(-6,-15,-1))
+                    zumbi5_group = pygame.sprite.Group()
+                    zumbi5_group.add(zumbi5)
+                    pontos+= 1
+                if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbizao):
+                    zumbizao= Zumbi(Zumbi.rect.x-10,100, -2)
+                    zumbizao_group = pygame.sprite.Group()
+                    zumbizao_group.add(zumbizao)
+                if Highscore <= pontos:
+                    Highscore= pontos
+
+
+                #============= Barra de Espaço (Tiro) ==================
+                if event.key == pygame.K_SPACE:
+                    tiro= Tiro('Bullet.png',player.rect.x, player.rect.y)
+                    tiro_group= pygame.sprite.Group()
+                    tiro_group.add(tiro)
+
+
+
+
+            #===============KeyUp===============
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == ord('a'):
+                    player.controle(steps,0)
+                if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                    player.controle(-steps,0)
+                if event.key == pygame.K_UP or event.key == ord('w'):
+                    player.controle(0,-steps)
+
+                if event.key == ord('q'):
+                    pygame.quit()
+                    sys.exit()
+                    main = False
+
+            #==============Collide=============
         if pygame.sprite.collide_rect(player,zumbi1) or pygame.sprite.collide_rect(player,zumbi2) or pygame.sprite.collide_rect(player,zumbi3) or pygame.sprite.collide_rect(player,zumbi4)or pygame.sprite.collide_rect(player,zumbi5):
             i+=1
             if i== 1:
@@ -489,79 +524,58 @@ while rodando:
                 player.rect.y = 375
                 char_group = pygame.sprite.Group()
                 char_group.add(player)
+                rodando = False
 
+        pygame.display.update()
 
+       #======================= Matar zombie com o tiro =======================
+        if pygame.sprite.collide_rect(tiro, zumbi1):
+            zumbi1 = Zumbi( 800, 350, random.randrange(-4,-10,-1))
+            zumbi1_group = pygame.sprite.Group()
+            zumbi1_group.add(zumbi1)
+            pontos+= 1
+            tiro= Tiro('Bullet.png',900, 10)
+            tiro_group= pygame.sprite.Group()
+            tiro_group.add(tiro)
 
+        if pygame.sprite.collide_rect(tiro, zumbi2):
+            zumbi2 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
+            zumbi2_group = pygame.sprite.Group()
+            zumbi2_group.add(zumbi2)
+            pontos+= 1
+            tiro= Tiro('Bullet.png',900, 10)
+            tiro_group= pygame.sprite.Group()
+            tiro_group.add(tiro)
 
+        if pygame.sprite.collide_rect(tiro, zumbi3):
+            zumbi3 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
+            zumbi3_group = pygame.sprite.Group()
+            zumbi3_group.add(zumbi3)
+            pontos+= 1
+            tiro= Tiro('Bullet.png',900, 10)
+            tiro_group= pygame.sprite.Group()
+            tiro_group.add(tiro)
 
+        if pygame.sprite.collide_rect(tiro, zumbi4):
+            zumbi4 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
+            zumbi4_group = pygame.sprite.Group()
+            zumbi4_group.add(zumbi4)
+            pontos+= 1
+            tiro= Tiro('Bullet.png',900, 20)
+            tiro_group= pygame.sprite.Group()
+            tiro_group.add(tiro)
 
+        if pygame.sprite.collide_rect(tiro, zumbi5):
+            zumbi5 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
+            zumbi5_group = pygame.sprite.Group()
+            zumbi5_group.add(zumbi5)
+            pontos+= 1
+            tiro= Tiro('Bullet.png',900, 20)
+            tiro_group= pygame.sprite.Group()
+            tiro_group.add(tiro)
 
-
-
-#                tela.fill(vermelho)
-#                font= pygame.font.SysFont(None,25)
-#                text= font.render("Para jogar novamente pressione 'x'",True, black)
-#                tela.blit(text,(30,90))
-#                font= pygame.font.SysFont(None,25)
-#                text= font.render(("Para sair pressione 'y'",True, black))
-#                tela.blit(text,(30,90))
-#                for event in pygame.event.get():
-#                    if event.type == pygame.QUIT:
-#                        pygame.quit()
-#                    if event.key == pygame.K_x:
-#                        score = 0
-#                        i= 0
-
-    pygame.display.update()
-
-   #======================= Matar zombie com o tiro =======================
-    if pygame.sprite.collide_rect(tiro, zumbi1):
-        zumbi1 = Zumbi( 800, 350, random.randrange(-4,-10,-1))
-        zumbi1_group = pygame.sprite.Group()
-        zumbi1_group.add(zumbi1)
-        pontos+= 1
-        tiro= Tiro('Bullet.png',900, 10)
-        tiro_group= pygame.sprite.Group()
-        tiro_group.add(tiro)
-
-    if pygame.sprite.collide_rect(tiro, zumbi2):
-        zumbi2 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
-        zumbi2_group = pygame.sprite.Group()
-        zumbi2_group.add(zumbi2)
-        pontos+= 1
-        tiro= Tiro('Bullet.png',900, 10)
-        tiro_group= pygame.sprite.Group()
-        tiro_group.add(tiro)
-
-    if pygame.sprite.collide_rect(tiro, zumbi3):
-        zumbi3 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
-        zumbi3_group = pygame.sprite.Group()
-        zumbi3_group.add(zumbi3)
-        pontos+= 1
-        tiro= Tiro('Bullet.png',900, 10)
-        tiro_group= pygame.sprite.Group()
-        tiro_group.add(tiro)
-
-    if pygame.sprite.collide_rect(tiro, zumbi4):
-        zumbi4 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
-        zumbi4_group = pygame.sprite.Group()
-        zumbi4_group.add(zumbi4)
-        pontos+= 1
-        tiro= Tiro('Bullet.png',900, 20)
-        tiro_group= pygame.sprite.Group()
-        tiro_group.add(tiro)
-
-    if pygame.sprite.collide_rect(tiro, zumbi5):
-        zumbi5 = Zumbi( 800, 350, random.randrange(-4,-15,-1))
-        zumbi5_group = pygame.sprite.Group()
-        zumbi5_group.add(zumbi5)
-        pontos+= 1
-        tiro= Tiro('Bullet.png',900, 20)
-        tiro_group= pygame.sprite.Group()
-        tiro_group.add(tiro)
-
-    background.move()
-    background1.move()
+        background.move()
+        background1.move()
 
 
 
@@ -574,25 +588,26 @@ while rodando:
 
 
 
-#================================ Gera as Saídas ===================================
+        #================================ Gera as Saídas ===================================
 
-    background_group.draw(tela)
-#    tela.blit(fundo, (0, 0))
-    zumbi1_group.draw(tela)
-    zumbi2_group.draw(tela)
-    zumbi3_group.draw(tela)
-    zumbi4_group.draw(tela)
-    zumbi5_group.draw(tela)
-    zumbizao_group.draw(tela)
-#    obstacle_group.draw(tela)
-    tiro_group.draw(tela)
-#    power.update()
-    player.update()
-    char_group.draw(tela)
-    Pontuacao(pontos)
-    coracao1_group.draw(tela)
-    coracao2_group.draw(tela)
-    coracao3_group.draw(tela)
-    pygame.display.update()
+        background_group.draw(tela)
+    #    tela.blit(fundo, (0, 0))
+        zumbi1_group.draw(tela)
+        zumbi2_group.draw(tela)
+        zumbi3_group.draw(tela)
+        zumbi4_group.draw(tela)
+        zumbi5_group.draw(tela)
+        zumbizao_group.draw(tela)
+    #    obstacle_group.draw(tela)
+        tiro_group.draw(tela)
+    #    power.update()
+        player.update()
+        char_group.draw(tela)
+        Pontuacao(pontos)
+        coracao1_group.draw(tela)
+        coracao2_group.draw(tela)
+        coracao3_group.draw(tela)
+        pygame.display.update()
+
 
 pygame.display.quit()
