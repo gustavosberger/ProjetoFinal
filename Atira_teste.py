@@ -412,7 +412,7 @@ while rodando:
                 zumbi5_group.add(zumbi5)
                 pontos+= 1
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbizao):
-                zumbizao= Zumbi(Zumbi.rect.x-1,100, -2)
+                zumbizao= Zumbi(Zumbi.rect.x-10,100, -2)
                 zumbizao_group = pygame.sprite.Group()
                 zumbizao_group.add(zumbizao)
 
