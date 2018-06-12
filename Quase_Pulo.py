@@ -1,14 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 27 08:47:15 2018
-@author: Gustavo
-"""
 import pygame
 import sys
 from pygame.locals import *
 import os
 import random
+
 
 
 class Vida(pygame.sprite.Sprite):
@@ -17,45 +12,36 @@ class Vida(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         image = pygame.image.load(arquivo_imagem)
         self.image= pygame.transform.scale (image, (30,30))
-        self.rect = self.image.get_rect() 
+        self.rect = self.image.get_rect()
         self.rect.x = posX
         self.rect.y= posY
-        
-        
 
 class Personagem(pygame.sprite.Sprite):
-     
+    
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        self.gravity = 0.2
+        self.velocity = 0
+        self.isJumping = False
         self.movex = 0
         self.movey = 0
         self.frame = 0
         self.images= []
-        ataque= False
-        if ataque== False:
-            for i in range(0,7):
-                img = pygame.image.load(os.path.join('images','__Bandit02_Walk_00' + str(i) + '.png')).convert_alpha()
-                img = pygame.transform.scale(img, (95, 150))
-                self.images.append(img)
-                self.image = self.images[0] 
-                self.rect  = self.image.get_rect() 
-        if ataque== True:
-            for e in range(0,7):
-                img = pygame.image.load(os.path.join('03-Attack ','__Bandit02_Attack_00' + str(e) + '.png')).convert_alpha()
-                img = pygame.transform.scale(img, (95, 150))
-                self.images.append(img)
-                self.image = self.images[0]
-                self.rect  = self.  image.get_rect()
+        for i in range(0,7):
+            img = pygame.image.load(os.path.join('__Bandit02_Walk_00' + str(i) + '.png')).convert_alpha()
+            img = pygame.transform.scale(img, (95, 150))
+            self.images.append(img)
+            self.image = self.images[0]
+            self.rect  = self.image.get_rect()
 
-           
+         
     def controle(self, x, y):
         self.movex += x
         self.movey += y
     
     def update(self):
-        ataque= False
         self.rect.x = self.rect.x + self.movex
-        self.rect.y = self.rect.y + self.movey 
+        self.rect.y = self.rect.y + self.movey
         if self.movex < 0:
             self.frame += 1
             if self.frame > 3*ani:
@@ -63,67 +49,26 @@ class Personagem(pygame.sprite.Sprite):
             self.image = self.images[self.frame//ani]
 
         if self.movex > 0:
-            self.frame += 1 
+            self.frame += 1
             if self.frame > 3*ani:
                 self.frame = 0
             self.image = self.images[(self.frame//ani)+1]
-                
-        if ataque== True:
-            self.frame+=1
-            if self.frames> 3*ani:
-                self.frame= 0
-            self.image= self.images[self.frame//ani]
-            
-             
-    def gravidade(self, steps):
-        speed= 0
-        self.rect.y-=steps
-        while self.rect.y < 480:
-            speed+=1
-            self.rect.y+=speed
             
 class Zumbi(pygame.sprite.Sprite): 
-    def __init__(self,posX,posY,velX):
+    def __init__(self, arquivo_imagem,posX,posY,velX):
         pygame.sprite.Sprite.__init__(self)
         self.vx= velX
-        self.frame= 0
-        self.images= []
-        vivo= True
-        morto= False
-        if vivo== True:
-            for i in range (1,10):
-                img = pygame.image.load(os.path.join('go_' + str(i) + '.png')).convert_alpha()
-                img = pygame.transform.scale(img, (75, 150))
-                self.images.append(img)
-                self.image = self.images[0]
-                self.rect  = self.image.get_rect()
-                self.rect.x = posX
-                self.rect.y= posY
-        if morto== True:
-            for i in range (1,7):
-                img = pygame.image.load(os.path.join('die_' + str(i) + '.png')).convert_alpha()
-                img = pygame.transform.scale(img, (75, 150))
-                self.images.append(img)
-                self.image = self.images[0]
-                self.rect  = self.image.get_rect()
-                self.rect.x = posX
-                self.rect.y= posY
+        image = pygame.image.load(arquivo_imagem)
+        self.image= pygame.transform.scale (image, (75,150))
+        self.rect = self.image.get_rect()
+        self.rect.x = posX
+        self.rect.y= posY
     
-        
-
-            
     def move(self):
-       self.rect.x += self.vx
-       self.frame+=1
-       if self.frame > 3*ani:
-           self.frame= 0
-       self.image= self.images[self.frame//ani]
-      
-        
-       
-       
+        self.rect.x += self.vx
 
-ani = 4
+
+ani = 4 
 pygame.init()
 tela = pygame.display.set_mode((800, 600), 0, 32)
 pygame.display.set_caption('Jogo EP')
@@ -139,25 +84,26 @@ char_group.add(player)
 
 
 # cria os zumbis
-zumbi1 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi1 = Zumbi("go_1.png", 700, 455, random.randrange(-1,-6,-1))
 zumbi1_group = pygame.sprite.Group()
 zumbi1_group.add(zumbi1)
 
-zumbi2 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi2 = Zumbi("go_1.png", 700, 455, random.randrange(-1,-6,-1))
 zumbi2_group = pygame.sprite.Group()
 zumbi2_group.add(zumbi2)
 
-zumbi3 = Zumbi (700, 455, random.randrange(-1,-6,-1))
+zumbi3 = Zumbi("go_1.png", 700, 455, random.randrange(-1,-6,-1))
 zumbi3_group = pygame.sprite.Group()
 zumbi3_group.add(zumbi3)
 
-zumbi4 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi4 = Zumbi("go_1.png", 700, 455, random.randrange(-1,-6,-1))
 zumbi4_group = pygame.sprite.Group()
 zumbi4_group.add(zumbi4)
 
-zumbi5 = Zumbi(700, 455, random.randrange(-1,-6,-1))
+zumbi5 = Zumbi("go_1.png", 700, 455, random.randrange(-1,-6,-1))
 zumbi5_group = pygame.sprite.Group()
 zumbi5_group.add(zumbi5)
+
 
 coracao1= Vida("heart.png",30,50)
 coracao1_group= pygame.sprite.Group()
@@ -173,7 +119,7 @@ coracao3_group.add(coracao3)
 
 
 relogio =pygame.time.Clock()
-
+delta = 30
 i=0
 rodando = True
 while rodando:
@@ -193,51 +139,48 @@ while rodando:
     zumbi5.move()
     if zumbi5.rect.x== -200:
         zumbi5.rect.x= 800
-
+    
+    
+    player.rect.y += player.velocity 
+        
+    player.velocity += player.gravity
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit(); sys.exit()
-            rodando = False  
+            rodando = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == ord('a'):
                 player.controle(-steps, 0)
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 player.controle(steps,0)
             if event.key == pygame.K_UP or event.key == ord('w'):
-                player.controle(0,-steps)
+                player.isJumping = True
+                player.velocity -= 2
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi1):
-                ataque= True
-                normal= False
-                zumbi1 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi1 = Zumbi("go_1.png", 800, 455, random.randrange(-1,-6,-1))
                 zumbi1_group = pygame.sprite.Group()
                 zumbi1_group.add(zumbi1)
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi2):
-                ataque= True  
-                normal= False
-                zumbi2 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi2 = Zumbi("go_1.png", 800, 455, random.randrange(-1,-6,-1))
                 zumbi2_group = pygame.sprite.Group()
                 zumbi2_group.add(zumbi2)
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi3):
-                ataque= True
-                normal= False
-                zumbi3 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi3 = Zumbi("go_1.png", 800, 455, random.randrange(-1,-6,-1))
                 zumbi3_group = pygame.sprite.Group()
                 zumbi3_group.add(zumbi3)
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi4):
-                ataque= True
-                normal= False
-                zumbi4 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi4 = Zumbi("go_1.png", 800, 455, random.randrange(-1,-6,-1))
                 zumbi4_group = pygame.sprite.Group()
                 zumbi4_group.add(zumbi1)
             if event.key == pygame.K_SPACE and pygame.sprite.collide_rect(player,zumbi5):
-                ataque= True
-                normal= False
-                zumbi5 = Zumbi( 800, 455, random.randrange(-1,-6,-1))
+                zumbi5 = Zumbi("go_1.png", 800, 455, random.randrange(-1,-6,-1))
                 zumbi5_group = pygame.sprite.Group()
                 zumbi5_group.add(zumbi5)
-                
-                
+            if player.isJumping:
 
+                player.isJumping = False
+    
                     
                 
                 
@@ -262,7 +205,7 @@ while rodando:
                 coracao2= Vida("heart.png",800,800)
                 coracao2_group= pygame.sprite.Group()
                 coracao2_group.add(coracao2)
-            elif i== 3: 
+            elif i== 3:
                 coracao3= Vida("heart.png",800,800)
                 coracao3_group= pygame.sprite.Group()
                 coracao3_group.add(coracao3)
@@ -270,13 +213,13 @@ while rodando:
                 
                 
             
-
+        
                 
         
                 
     
                 
-    #gera saídas  
+    #gera saídas
     
     tela.blit(fundo, (0, 0))
     player.update()
